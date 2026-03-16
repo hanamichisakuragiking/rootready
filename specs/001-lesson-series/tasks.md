@@ -1,0 +1,194 @@
+# Tasks: RootReady Lesson Series
+
+**Spec**: `specs/001-lesson-series/spec.md` | **Plan**: `specs/001-lesson-series/plan.md`
+
+## Phase 1 — Lesson 1: Installing Rocky Linux in a VM ✅
+
+- [x] Create `content/lessons/01-install-rocky/index.md`
+- [x] Write frontmatter (title, description, date, weight:1, tags)
+- [x] Write all sections (What You Will Learn → Summary)
+- [x] Verify `hugo build` succeeds with zero errors
+- [x] Commit and deploy
+
+**Delivered**: Commit `1c55504`
+
+---
+
+## Phase 2 — Lesson 2: First Steps After Install
+
+- [ ] Create `content/lessons/02-first-steps/index.md`
+- [ ] Write frontmatter (weight: 2, tags: users, ssh, firewalld)
+- [ ] Section: What You Will Learn
+- [ ] Section: What You Need Before Starting (reference Lesson 1)
+- [ ] Section: Step — Create a non-root user with sudo
+- [ ] Section: Step — Generate and install SSH keys
+- [ ] Section: Step — Disable root login and password auth
+- [ ] Section: Step — Configure firewalld basics
+- [ ] Section: Troubleshooting (locked out via SSH, firewall blocking)
+- [ ] Section: Summary
+- [ ] Update Lesson 1 "Next up" to real `relref` link
+- [ ] Verify `hugo build` succeeds
+- [ ] Commit
+
+---
+
+## Phase 3 — Lesson 3: Understanding SELinux
+
+- [ ] Create `content/lessons/03-selinux/index.md`
+- [ ] Write frontmatter (weight: 3, tags: selinux, security)
+- [ ] Section: What You Will Learn
+- [ ] Section: What You Need Before Starting (reference Lesson 2)
+- [ ] Section: Step — What SELinux is and why it matters
+- [ ] Section: Step — Check SELinux status with `getenforce` / `sestatus`
+- [ ] Section: Step — Understanding enforcing, permissive, disabled
+- [ ] Section: Step — Read and fix AVC denials with `audit2why`
+- [ ] Section: Step — Set file contexts and booleans
+- [ ] Section: Troubleshooting (service won't start due to SELinux)
+- [ ] Section: Summary
+- [ ] Update Lesson 2 "Next up" link
+- [ ] Verify `hugo build` succeeds
+- [ ] Commit
+
+---
+
+## Phase 4 — Lesson 4: Installing and Hardening Nginx
+
+- [ ] Create `content/lessons/04-nginx/index.md`
+- [ ] Write frontmatter (weight: 4, tags: nginx, web-server)
+- [ ] Section: What You Will Learn
+- [ ] Section: What You Need Before Starting (reference Lesson 3)
+- [ ] Section: Step — Install Nginx via dnf
+- [ ] Section: Step — Enable and start with systemctl
+- [ ] Section: Step — Open firewall port 80/443
+- [ ] Section: Step — Set correct SELinux contexts
+- [ ] Section: Step — Serve a custom HTML page
+- [ ] Section: Step — Harden with security headers
+- [ ] Section: Troubleshooting (403 Forbidden, SELinux AVC on content)
+- [ ] Section: Summary
+- [ ] Update Lesson 3 "Next up" link
+- [ ] Verify `hugo build` succeeds
+- [ ] Commit
+
+---
+
+## Phase 5 — Lesson 5: Podman and Rootless Containers
+
+- [ ] Create `content/lessons/05-podman-basics/index.md`
+- [ ] Write frontmatter (weight: 5, tags: podman, containers)
+- [ ] Section: What You Will Learn
+- [ ] Section: What You Need Before Starting (reference Lesson 4)
+- [ ] Section: Step — What containers are (beginner explanation)
+- [ ] Section: Step — Install Podman
+- [ ] Section: Step — Pull and run a container image
+- [ ] Section: Step — Run rootless as non-root user
+- [ ] Section: Step — Map ports and volumes
+- [ ] Section: Step — Stop and remove containers
+- [ ] Section: Troubleshooting (permission denied, port conflicts)
+- [ ] Section: Summary
+- [ ] Update Lesson 4 "Next up" link
+- [ ] Verify `hugo build` succeeds
+- [ ] Commit
+
+---
+
+## Phase 6 — Lesson 6: Quadlet and systemd Integration
+
+- [ ] Create `content/lessons/06-quadlet/index.md`
+- [ ] Write frontmatter (weight: 6, tags: quadlet, systemd, podman)
+- [ ] Section: What You Will Learn
+- [ ] Section: What You Need Before Starting (reference Lesson 5)
+- [ ] Section: Step — Why containers need a service manager
+- [ ] Section: Step — Write a `.container` Quadlet file
+- [ ] Section: Step — Enable and start with `systemctl --user`
+- [ ] Section: Step — Verify auto-restart behavior
+- [ ] Section: Troubleshooting (unit not found, ExecStart failure)
+- [ ] Section: Summary
+- [ ] Update Lesson 5 "Next up" link
+- [ ] Verify `hugo build` succeeds
+- [ ] Commit
+
+---
+
+## Phase 7 — Lesson 7: Nginx as a Reverse Proxy
+
+- [ ] Create `content/lessons/07-reverse-proxy/index.md`
+- [ ] Write frontmatter (weight: 7, tags: nginx, reverse-proxy, podman)
+- [ ] Section: What You Will Learn
+- [ ] Section: What You Need Before Starting (reference Lesson 6)
+- [ ] Section: Step — What a reverse proxy does (diagram/explanation)
+- [ ] Section: Step — Configure Nginx upstream and proxy_pass
+- [ ] Section: Step — Set proxy headers (Host, X-Real-IP, etc.)
+- [ ] Section: Step — Fix SELinux for network connections (`httpd_can_network_connect`)
+- [ ] Section: Step — Test with curl
+- [ ] Section: Troubleshooting (502 Bad Gateway, SELinux boolean)
+- [ ] Section: Summary
+- [ ] Update Lesson 6 "Next up" link
+- [ ] Verify `hugo build` succeeds
+- [ ] Commit
+
+---
+
+## Phase 8 — Lesson 8: Logging with journald
+
+- [ ] Create `content/lessons/08-logging/index.md`
+- [ ] Write frontmatter (weight: 8, tags: journald, logging, systemd)
+- [ ] Section: What You Will Learn
+- [ ] Section: What You Need Before Starting (reference Lesson 7)
+- [ ] Section: Step — What journald is and how it relates to systemd
+- [ ] Section: Step — Use `journalctl` to read logs
+- [ ] Section: Step — Filter by unit, priority, time range
+- [ ] Section: Step — Configure persistent storage
+- [ ] Section: Step — Read Podman container logs via journal
+- [ ] Section: Troubleshooting (logs not persisting after reboot)
+- [ ] Section: Summary
+- [ ] Update Lesson 7 "Next up" link
+- [ ] Verify `hugo build` succeeds
+- [ ] Commit
+
+---
+
+## Phase 9 — Lesson 9: Preventing DoS with fail2ban
+
+- [ ] Create `content/lessons/09-fail2ban/index.md`
+- [ ] Write frontmatter (weight: 9, tags: fail2ban, security, firewalld)
+- [ ] Section: What You Will Learn
+- [ ] Section: What You Need Before Starting (reference Lesson 8)
+- [ ] Section: Step — What fail2ban does (brute-force protection)
+- [ ] Section: Step — Install from EPEL
+- [ ] Section: Step — Configure jail.local for SSH
+- [ ] Section: Step — Configure jail for Nginx
+- [ ] Section: Step — Verify bans with `fail2ban-client status`
+- [ ] Section: Troubleshooting (legitimate IP banned, jail not active)
+- [ ] Section: Summary
+- [ ] Update Lesson 8 "Next up" link
+- [ ] Verify `hugo build` succeeds
+- [ ] Commit
+
+---
+
+## Phase 10 — Lesson 10: CI/CD with GitHub Actions
+
+- [ ] Create `content/lessons/10-cicd/index.md`
+- [ ] Write frontmatter (weight: 10, tags: ci-cd, github-actions, deployment)
+- [ ] Section: What You Will Learn
+- [ ] Section: What You Need Before Starting (reference Lesson 9)
+- [ ] Section: Step — What CI/CD means (beginner explanation)
+- [ ] Section: Step — Create a workflow file (.github/workflows/)
+- [ ] Section: Step — Build and test on push
+- [ ] Section: Step — Deploy to the server (conceptual / example)
+- [ ] Section: Step — Add a status badge to the repo
+- [ ] Section: Troubleshooting (workflow syntax error, secrets not set)
+- [ ] Section: Summary
+- [ ] Update Lesson 9 "Next up" link
+- [ ] Verify `hugo build` succeeds
+- [ ] Commit
+
+---
+
+## Post-Completion
+
+- [ ] All 10 "Next up" links are real `relref` links
+- [ ] Full `hugo build --gc --minify` succeeds with zero errors
+- [ ] All lessons render correctly on GitHub Pages
+- [ ] `CLAUDE.md` updated with final syllabus status
+- [ ] Feature spec stories updated to ✅ DELIVERED
