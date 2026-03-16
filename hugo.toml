@@ -1,3 +1,14 @@
-baseURL = 'https://example.org/'
+baseURL = 'https://hanamichisakuragiking.github.io/rootready/'
 languageCode = 'en-us'
-title = 'My New Hugo Project'
+title = 'RootReady'
+theme = 'Hextra'
+
+[params]
+  description = "From zero to your own server - no sysadmin degree required."
+
+[params.navbar]
+  displayTitle = true
+  displayLogo = false
+
+[markup.highlight]
+  noClasses = false
