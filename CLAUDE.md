@@ -13,9 +13,10 @@ learn Linux server operations — from installing Rocky Linux to running
 rootless Podman containers secured with SELinux and fail2ban.
 
 - **Hugo version:** 0.157.0 Extended
-- **Theme:** Hextra (git submodule at `themes/hextra`)
-- **Hosting:** GitHub Pages
-- **CI/CD:** GitHub Actions
+- **Theme:** Hextra (git submodule at `themes/hextra`) — **lowercase `hextra`**
+- **Hosting:** GitHub Pages (https://hanamichisakuragiking.github.io/rootready/)
+- **GitHub repo:** https://github.com/hanamichisakuragiking/rootready
+- **CI/CD:** GitHub Actions (`deploy.yml` builds Hugo and deploys to Pages)
 - **Quality gates:** github/spec-kit (frontmatter + content validation)
 - **Target audience:** Complete beginners — zero Linux or sysadmin background assumed
 
@@ -51,11 +52,11 @@ rootready/
 ## Hugo Commands
 
 Always run Hugo commands from the project root.
-Use Git Bash on Windows — not PowerShell — for any git commands.
+Use Git Bash on Windows — not PowerShell — for Hugo and git commands.
 
 ```bash
-# Start local dev server with live reload
-hugo server
+# Start local dev server (overrides baseURL for localhost)
+hugo server -b http://localhost:1313
 
 # Build the site to public/
 hugo
@@ -66,6 +67,11 @@ hugo new content/lessons/02-first-steps/index.md
 # Check Hugo version
 hugo version
 ```
+
+> **Important:** The `baseURL` in `hugo.toml` is set to the GitHub Pages URL
+> (`https://hanamichisakuragiking.github.io/rootready/`).
+> Without `-b http://localhost:1313`, the local server serves everything
+> under `/rootready/` and the root path returns 404.
 
 ---
 
@@ -119,7 +125,7 @@ spec-kit will block deployment if `## Summary` is missing.
 
 | Weight | Slug | Title | Status |
 |--------|------|-------|--------|
-| 1 | `01-install-rocky` | Installing Rocky Linux in a VM | Draft |
+| 1 | `01-install-rocky` | Installing Rocky Linux in a VM | ✅ Done |
 | 2 | `02-first-steps` | Users, SSH, and firewalld | Planned |
 | 3 | `03-selinux` | Understanding SELinux | Planned |
 | 4 | `04-nginx` | Installing and Hardening Nginx | Planned |
@@ -138,9 +144,13 @@ spec-kit will block deployment if `## Summary` is missing.
 
 Pipeline steps:
 1. Checkout repo (with submodules)
-2. Setup Hugo
-3. Build site (`hugo --minify`)
-4. Deploy `public/` to GitHub Pages
+2. Install Hugo Extended 0.157.0 from tar.gz release
+3. Build site (`hugo build --gc --minify`)
+4. Upload artifact and deploy to GitHub Pages
+
+The workflow installs Hugo by downloading the `.tar.gz` from GitHub releases
+(not the `.deb` — that format does not exist for Hugo).
+Uses `actions/checkout@v6` (not v4) to avoid Node.js 20 deprecation warnings.
 
 ### spec.yml — triggered on every PR
 
@@ -194,16 +204,36 @@ Always open a PR — this triggers the spec-kit checks.
 ## Theme Notes
 
 - Theme is Hextra, loaded as a git submodule at `themes/hextra`
+- **`hugo.toml` must use `theme = 'hextra'` (lowercase)** — the submodule
+  folder is `themes/hextra`. Windows is case-insensitive but the Linux CI
+  runner is case-sensitive. Using `Hextra` will break the GitHub Actions build.
 - **Never edit files inside `themes/hextra/`** — changes will be lost on submodule update
 - To override theme layouts, copy the file to the matching path under `layouts/`
   e.g. `themes/hextra/layouts/_default/single.html` → `layouts/_default/single.html`
 - Sidebar order is controlled by `weight` in frontmatter
+- Hextra uses `type: docs` layout for sidebar navigation. The `lessons/_index.md`
+  has `cascade: type: docs` so all lessons get the sidebar automatically.
+- The navbar is configured via `[[menu.main]]` entries in `hugo.toml`.
+  Currently has: Lessons link + Search.
 
 ---
 
 ## Known Issues / Environment Notes
 
-- Use **Git Bash** on Windows for all `git` commands — PowerShell breaks git submodule
-- Use **VS Code terminal set to Git Bash** as the default shell for this project
+- Use **Git Bash** on Windows for all `hugo` and `git` commands — PowerShell
+  may not have Hugo on its PATH
+- Hugo is available in Git Bash but **not in VS Code's default PowerShell terminal**.
+  If running Hugo from VS Code terminal, make sure the terminal is set to Git Bash.
 - Hugo submodule must be initialized before first build:
   `git submodule update --init --recursive`
+- **`baseURL` gotcha:** `hugo.toml` sets `baseURL` to the GitHub Pages URL
+  (`https://hanamichisakuragiking.github.io/rootready/`). When running
+  `hugo server` locally without `-b http://localhost:1313`, the site is served
+  at `http://localhost:1313/rootready/` — the root `/` returns 404.
+  Always use `hugo server -b http://localhost:1313` for local dev.
+- **Do not use `relref` shortcodes to link to lessons that don't exist yet.**
+  Hugo will refuse to build if the target page is missing. Use plain text
+  like `Lesson 2 — Title (coming soon)` until the lesson is created.
+- **`public/` is gitignored.** The site is built on GitHub Actions, not locally.
+  Never commit the `public/` folder.
+- **`.hugo_build.lock` and `.trunk/` are gitignored.**
