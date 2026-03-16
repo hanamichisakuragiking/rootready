@@ -14,21 +14,21 @@
 
 ---
 
-## Phase 2 — Lesson 2: First Steps After Install
+## Phase 2 — Lesson 2: First Steps After Install ✅
 
-- [ ] Create `content/lessons/02-first-steps/index.md`
-- [ ] Write frontmatter (weight: 2, tags: users, ssh, firewalld)
-- [ ] Section: What You Will Learn
-- [ ] Section: What You Need Before Starting (reference Lesson 1)
-- [ ] Section: Step — Create a non-root user with sudo
-- [ ] Section: Step — Generate and install SSH keys
-- [ ] Section: Step — Disable root login and password auth
-- [ ] Section: Step — Configure firewalld basics
-- [ ] Section: Troubleshooting (locked out via SSH, firewall blocking)
-- [ ] Section: Summary
-- [ ] Update Lesson 1 "Next up" to real `relref` link
-- [ ] Verify `hugo build` succeeds
-- [ ] Commit
+- [x] Create `content/lessons/02-first-steps/index.md`
+- [x] Write frontmatter (weight: 2, tags: users, ssh, firewalld)
+- [x] Section: What You Will Learn
+- [x] Section: What You Need Before Starting (reference Lesson 1)
+- [x] Section: Step — Create a non-root user with sudo
+- [x] Section: Step — Generate and install SSH keys
+- [x] Section: Step — Disable root login and password auth
+- [x] Section: Step — Configure firewalld basics
+- [x] Section: Troubleshooting (locked out via SSH, firewall blocking)
+- [x] Section: Summary
+- [x] Update Lesson 1 "Next up" to real `relref` link
+- [x] Verify `hugo build` succeeds
+- [x] Commit
 
 ---
 

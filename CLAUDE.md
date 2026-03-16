@@ -52,19 +52,31 @@ rootready/
 ## Hugo Commands
 
 Always run Hugo commands from the project root.
-Use Git Bash on Windows — not PowerShell — for Hugo and git commands.
 
-```bash
+**Hugo path on this machine (Windows, installed via WinGet):**
+
+```text
+C:\Users\User\AppData\Local\Microsoft\WinGet\Links\hugo.exe
+```
+
+In PowerShell, use the full path or an alias:
+
+```powershell
 # Start local dev server (overrides baseURL for localhost)
-hugo server -b http://localhost:1313
+& "C:\Users\User\AppData\Local\Microsoft\WinGet\Links\hugo.exe" server -b http://localhost:1313
 
 # Build the site to public/
-hugo
-
-# Create a new lesson
-hugo new content/lessons/02-first-steps/index.md
+& "C:\Users\User\AppData\Local\Microsoft\WinGet\Links\hugo.exe" build
 
 # Check Hugo version
+& "C:\Users\User\AppData\Local\Microsoft\WinGet\Links\hugo.exe" version
+```
+
+In Git Bash (if Hugo is on the Bash PATH):
+
+```bash
+hugo server -b http://localhost:1313
+hugo build
 hugo version
 ```
 
@@ -126,7 +138,7 @@ spec-kit will block deployment if `## Summary` is missing.
 | Weight | Slug | Title | Status |
 |--------|------|-------|--------|
 | 1 | `01-install-rocky` | Installing Rocky Linux in a VM | ✅ Done |
-| 2 | `02-first-steps` | Users, SSH, and firewalld | Planned |
+| 2 | `02-first-steps` | Users, SSH, and firewalld | ✅ Done |
 | 3 | `03-selinux` | Understanding SELinux | Planned |
 | 4 | `04-nginx` | Installing and Hardening Nginx | Planned |
 | 5 | `05-podman-basics` | Podman and Rootless Containers | Planned |

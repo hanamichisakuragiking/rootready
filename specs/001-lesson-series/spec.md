@@ -25,7 +25,7 @@ A reader with no Linux experience downloads Rocky Linux, installs VirtualBox, cr
 
 ---
 
-### User Story 2 — Users, SSH, and firewalld (Priority: P1)
+### ✅ User Story 2 — Users, SSH, and firewalld (Priority: P1) — DELIVERED
 
 A reader learns why running everything as root is dangerous, creates a regular user account with sudo access, enables SSH for remote access, and configures firewalld to allow only SSH traffic.
 
@@ -39,6 +39,8 @@ A reader learns why running everything as root is dangerous, creates a regular u
 2. **Given** SSH is enabled, **When** reader connects from host terminal via `ssh user@ip`, **Then** they land in a shell on the VM.
 3. **Given** firewalld is active, **When** reader runs `firewall-cmd --list-all`, **Then** only `ssh` service is listed.
 4. **Given** firewalld is active, **When** reader tries to access an unlisted port, **Then** the connection is refused.
+
+**Status**: ✅ Complete — `content/lessons/02-first-steps/index.md`
 
 ---
 
