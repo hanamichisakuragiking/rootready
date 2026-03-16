@@ -5,6 +5,9 @@ resources/_gen/
 # Hugo lock file
 .hugo_build.lock
 
+# Trunk linter cache
+.trunk/
+
 # OS files
 .DS_Store
 Thumbs.db

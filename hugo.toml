@@ -12,3 +12,15 @@ theme = 'Hextra'
 
 [markup.highlight]
   noClasses = false
+
+[[menu.main]]
+  identifier = "lessons"
+  name = "Lessons"
+  pageRef = "/lessons"
+  weight = 1
+
+[[menu.main]]
+  name = "Search"
+  weight = 2
+  [menu.main.params]
+    type = "search"

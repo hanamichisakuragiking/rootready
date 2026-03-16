@@ -278,4 +278,4 @@ Your virtual server is ready. In the next lesson, you will create a regular user
 
 ---
 
-**Next up:** [Lesson 2 — Users, SSH, and firewalld →]({{< relref "/lessons/02-first-steps" >}})
+**Next up:** Lesson 2 — Users, SSH, and firewalld (coming soon)
