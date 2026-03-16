@@ -506,4 +506,4 @@ Your server is now secured at two layers: SSH only accepts key-based login from 
 
 ---
 
-**Next up:** Lesson 3 — Understanding SELinux (coming soon)
+**Next up:** [Lesson 3 — Understanding SELinux]({{< relref "/lessons/03-selinux" >}})

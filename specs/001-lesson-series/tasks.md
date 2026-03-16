@@ -34,20 +34,20 @@
 
 ## Phase 3 — Lesson 3: Understanding SELinux
 
-- [ ] Create `content/lessons/03-selinux/index.md`
-- [ ] Write frontmatter (weight: 3, tags: selinux, security)
-- [ ] Section: What You Will Learn
-- [ ] Section: What You Need Before Starting (reference Lesson 2)
-- [ ] Section: Step — What SELinux is and why it matters
-- [ ] Section: Step — Check SELinux status with `getenforce` / `sestatus`
-- [ ] Section: Step — Understanding enforcing, permissive, disabled
-- [ ] Section: Step — Read and fix AVC denials with `audit2why`
-- [ ] Section: Step — Set file contexts and booleans
-- [ ] Section: Troubleshooting (service won't start due to SELinux)
-- [ ] Section: Summary
-- [ ] Update Lesson 2 "Next up" link
-- [ ] Verify `hugo build` succeeds
-- [ ] Commit
+- [x] Create `content/lessons/03-selinux/index.md`
+- [x] Write frontmatter (weight: 3, tags: selinux, security)
+- [x] Section: What You Will Learn
+- [x] Section: What You Need Before Starting (reference Lesson 2)
+- [x] Section: Step — What SELinux is and why it matters
+- [x] Section: Step — Check SELinux status with `getenforce` / `sestatus`
+- [x] Section: Step — Understanding enforcing, permissive, disabled
+- [x] Section: Step — Read and fix AVC denials with `audit2why`
+- [x] Section: Step — Set file contexts and booleans
+- [x] Section: Troubleshooting (service won't start due to SELinux)
+- [x] Section: Summary
+- [x] Update Lesson 2 "Next up" link
+- [x] Verify `hugo build` succeeds
+- [x] Commit
 
 ---
 
