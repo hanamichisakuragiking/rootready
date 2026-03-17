@@ -417,4 +417,4 @@ SELinux is no longer a black box. You can now read what it is blocking, understa
 
 ---
 
-**Next up:** Lesson 4 — Installing and Hardening Nginx (coming soon)
+**Next up:** [Lesson 4 — Installing and Hardening Nginx]({{< relref "/lessons/04-nginx" >}})

@@ -51,23 +51,23 @@
 
 ---
 
-## Phase 4 — Lesson 4: Installing and Hardening Nginx
+## Phase 4 — Lesson 4: Installing and Hardening Nginx ✅
 
-- [ ] Create `content/lessons/04-nginx/index.md`
-- [ ] Write frontmatter (weight: 4, tags: nginx, web-server)
-- [ ] Section: What You Will Learn
-- [ ] Section: What You Need Before Starting (reference Lesson 3)
-- [ ] Section: Step — Install Nginx via dnf
-- [ ] Section: Step — Enable and start with systemctl
-- [ ] Section: Step — Open firewall port 80/443
-- [ ] Section: Step — Set correct SELinux contexts
-- [ ] Section: Step — Serve a custom HTML page
-- [ ] Section: Step — Harden with security headers
-- [ ] Section: Troubleshooting (403 Forbidden, SELinux AVC on content)
-- [ ] Section: Summary
-- [ ] Update Lesson 3 "Next up" link
-- [ ] Verify `hugo build` succeeds
-- [ ] Commit
+- [x] Create `content/lessons/04-nginx/index.md`
+- [x] Write frontmatter (weight: 4, tags: nginx, web-server)
+- [x] Section: What You Will Learn
+- [x] Section: What You Need Before Starting (reference Lesson 3)
+- [x] Section: Step — Install Nginx via dnf
+- [x] Section: Step — Enable and start with systemctl
+- [x] Section: Step — Open firewall port 80/443
+- [x] Section: Step — Set correct SELinux contexts
+- [x] Section: Step — Serve a custom HTML page
+- [x] Section: Step — Harden with security headers
+- [x] Section: Troubleshooting (403 Forbidden, SELinux AVC on content)
+- [x] Section: Summary
+- [x] Update Lesson 3 "Next up" link
+- [x] Verify `hugo build` succeeds
+- [x] Commit
 
 ---
 
