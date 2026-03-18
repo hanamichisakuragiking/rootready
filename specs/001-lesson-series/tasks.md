@@ -71,23 +71,23 @@
 
 ---
 
-## Phase 5 — Lesson 5: Podman and Rootless Containers
+## Phase 5 — Lesson 5: Podman and Rootless Containers ✅
 
-- [ ] Create `content/lessons/05-podman-basics/index.md`
-- [ ] Write frontmatter (weight: 5, tags: podman, containers)
-- [ ] Section: What You Will Learn
-- [ ] Section: What You Need Before Starting (reference Lesson 4)
-- [ ] Section: Step — What containers are (beginner explanation)
-- [ ] Section: Step — Install Podman
-- [ ] Section: Step — Pull and run a container image
-- [ ] Section: Step — Run rootless as non-root user
-- [ ] Section: Step — Map ports and volumes
-- [ ] Section: Step — Stop and remove containers
-- [ ] Section: Troubleshooting (permission denied, port conflicts)
-- [ ] Section: Summary
-- [ ] Update Lesson 4 "Next up" link
-- [ ] Verify `hugo build` succeeds
-- [ ] Commit
+- [x] Create `content/lessons/05-podman-basics/index.md`
+- [x] Write frontmatter (weight: 5, tags: podman, containers)
+- [x] Section: What You Will Learn
+- [x] Section: What You Need Before Starting (reference Lesson 4)
+- [x] Section: Step — What containers are (beginner explanation)
+- [x] Section: Step — Install Podman
+- [x] Section: Step — Pull and run a container image
+- [x] Section: Step — Run rootless as non-root user
+- [x] Section: Step — Map ports and volumes
+- [x] Section: Step — Stop and remove containers
+- [x] Section: Troubleshooting (permission denied, port conflicts)
+- [x] Section: Summary
+- [x] Update Lesson 4 "Next up" link
+- [x] Verify `hugo build` succeeds
+- [x] Commit
 
 ---
 

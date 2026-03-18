@@ -451,4 +451,4 @@ Your server is now publicly reachable, SELinux-confined, and hardened against ba
 
 ---
 
-**Next up:** Lesson 5 — Podman and Rootless Containers (coming soon)
+**Next up:** [Lesson 5 — Podman and Rootless Containers]({{< relref "/lessons/05-podman-basics" >}})
