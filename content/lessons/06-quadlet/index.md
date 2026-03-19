@@ -756,6 +756,84 @@ journalctl --user -u web -n 50 --no-pager
 
 Read the log carefully — the application's own error message is usually the clue. Fix the underlying problem (wrong image name, missing volume, bad environment variable) in the `.container` file, reload the daemon, and start again.
 
+#### Why the loop happens and how to prevent it
+
+> **What is the start-limit?**
+> systemd has two independent restart controls. `Restart=always` in the `[Service]` section says *"restart every time the service stops."* But systemd also tracks how many times it has restarted within a time window — and if that count exceeds a threshold, it gives up and marks the unit `failed` rather than hammering the system endlessly. This safety cut-out is the **start rate limit**, controlled by `StartLimitBurst` and `StartLimitIntervalSec` in the `[Unit]` section.
+
+The defaults are: **5 restarts within 10 seconds** → unit fails. With the 5-second `RestartSec` you set earlier, a container that crashes on every attempt would hit the limit in about 25 seconds.
+
+There are three tools for preventing or controlling this:
+
+**1 — Increase `RestartSec` to slow down the restart rate**
+
+The simplest prevention. A longer wait between restarts means fewer attempts per 10 seconds, so the rate limit is harder to hit. Add this to your `[Service]` section:
+
+```ini
+[Service]
+Restart=always
+RestartSec=10s
+```
+
+With a 10-second delay, only 1 restart attempt happens every 10 seconds — well under the default limit of 5 in 10 seconds. This also gives transient problems (a slow database, a momentary network outage) more time to resolve before the next attempt.
+
+**2 — Raise the burst limit for services that need more attempts**
+
+If your application legitimately takes several tries to become healthy (e.g. it polls an external service at startup), keep a short `RestartSec` but tell systemd to tolerate more attempts before giving up. Add `StartLimitBurst` and `StartLimitIntervalSec` to the `[Unit]` section:
+
+```ini
+[Unit]
+Description=My web application (Nginx container)
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=60s
+StartLimitBurst=10
+```
+
+This says: allow up to 10 restarts within 60 seconds before declaring failure. Combined with `RestartSec=5s` this gives your container up to ~50 seconds of retry time before systemd stops trying.
+
+**3 — Disable the start limit entirely (use with caution)**
+
+For a container that *must* keep retrying no matter what — for example a container waiting for a database that may take minutes to come up on a slow machine — you can disable the rate limit:
+
+```ini
+[Unit]
+StartLimitIntervalSec=0
+```
+
+Setting `StartLimitIntervalSec=0` disables the rate-limit window entirely. `Restart=always` will then restart the container forever with no automatic stopping.
+
+> **Warning:** Disabling the start limit removes the safety net. If the container has a genuine misconfiguration it will restart forever, consuming CPU and storage for logs. Only use this if you have monitoring in place to alert you when a service is stuck in a loop, or if the container is designed to wait indefinitely for dependencies.
+
+#### Recommended settings for a learning environment
+
+For the `web.container` you have been building in this lesson, add the following to make restart behaviour clear and predictable:
+
+```ini
+[Unit]
+Description=My web application (Nginx container)
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=60s
+StartLimitBurst=5
+
+[Container]
+Image=docker.io/library/nginx:latest
+PublishPort=8080:80
+Volume=%h/www:/usr/share/nginx/html:Z
+Environment=NGINX_ENTRYPOINT_QUIET_LOGS=1
+AutoUpdate=registry
+
+[Service]
+Restart=always
+RestartSec=10s
+
+[Install]
+WantedBy=default.target
+```
+
+With these values: 5 attempts in 60 seconds before failure, 10 seconds between attempts. If the container fails 5 times in a minute there is a real problem that needs investigation, and systemd will stop the loop and wait for you.
+
 ### SELinux denies the container image itself (not the volume mount)
 
 In Lesson 5 and earlier in this lesson, you applied the `:Z` suffix to volume mounts so that SELinux labels the *host directory* correctly for container access. But sometimes SELinux denies access to the **container image layers** themselves — a different problem with a different fix.
