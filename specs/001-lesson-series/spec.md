@@ -94,7 +94,7 @@ A reader understands what containers are, why rootless is better for security, p
 
 ### User Story 6 — Running Containers with Quadlet + systemd (Priority: P3)
 
-A reader learns how to make containers start automatically on boot using Quadlet unit files instead of manual `podman run` commands.
+A reader learns how to make containers start automatically on boot using Quadlet unit files instead of manual `podman run` commands. They also understand the history of container service management, how to inspect all running container services, how to keep images up to date automatically, and what to do when SELinux blocks the container image itself.
 
 **Why this priority**: Production readiness — containers must survive reboots.
 
@@ -105,6 +105,10 @@ A reader learns how to make containers start automatically on boot using Quadlet
 1. **Given** a Quadlet `.container` file, **When** reader runs `systemctl --user start myapp`, **Then** the container starts.
 2. **Given** linger is enabled, **When** the VM reboots, **Then** the container is running without manual intervention.
 3. **Given** a running Quadlet service, **When** reader runs `systemctl --user status myapp`, **Then** status shows active.
+4. **Given** `podman generate systemd` is mentioned, **When** reader reads the explanation, **Then** they understand it is the legacy approach and why Quadlet replaces it.
+5. **Given** multiple Quadlet services are running, **When** reader runs `systemctl --user list-units 'pod*'`, **Then** they see all container units and their states at a glance.
+6. **Given** `podman-auto-update` is configured with `AutoUpdate=registry` in the `.container` file, **When** reader runs `podman auto-update --dry-run`, **Then** they see which images have updates available without pulling them.
+7. **Given** SELinux is enforcing and a container is denied despite a correctly labelled volume, **When** reader checks `ausearch -m AVC`, **Then** they can identify and fix a denial caused by the container image's own label rather than the volume mount.
 
 ---
 
