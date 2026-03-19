@@ -421,6 +421,217 @@ Logging is covered in depth in Lesson 8. For now, knowing that `journalctl --use
 
 ---
 
+## Step 7 — `podman generate systemd` (Legacy) vs Quadlet
+
+If you search the internet for "run Podman container as service," you will find many tutorials using a command called `podman generate systemd`. This is the **old way**. It is important to understand what it was, why it was replaced, and why you should not use it for new work.
+
+### What `podman generate systemd` did
+
+```bash
+podman generate systemd --name mycontainer --files --new
+```
+
+This command inspected a running container and generated a raw `systemd` unit file containing a long, auto-generated `ExecStart=` line — essentially a `podman run ...` command with every flag filled in:
+
+```ini
+[Service]
+ExecStart=/usr/bin/podman run \
+  --cidfile=/run/user/1000/mycontainer.cid \
+  --cgroups=no-conmon \
+  --rm \
+  --sdnotify=conmon \
+  -d \
+  --replace \
+  --name mycontainer \
+  -p 8080:80 \
+  docker.io/library/nginx:latest
+ExecStop=/usr/bin/podman stop --ignore --cidfile /run/user/1000/mycontainer.cid
+ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile /run/user/1000/mycontainer.cid
+```
+
+It worked, but the generated files were long, fragile, and tightly coupled to the container that existed at generation time. If the container changed, you had to regenerate the file. If you made a mistake, you were editing raw `podman run` flags in a unit file — not a pleasant experience.
+
+### Why `podman generate systemd` was deprecated
+
+Red Hat deprecated `podman generate systemd` in Podman 4.4 (2022) and removed it entirely in Podman 5.0 (2024). The reasons were:
+
+1. **Fragility** — generated files rotted when container configuration drifted.
+2. **Readability** — the output was not human-friendly and was hard to review in code.
+3. **No declarative source of truth** — the unit file was derived from a running container, not from a version-controlled description of intent.
+4. **Quadlet already existed** — Quadlet was integrated into Podman at the same time the old command was deprecated. It solves all the problems above with a clean, declarative `.container` file format.
+
+### Why you are using Quadlet
+
+Quadlet gives you:
+
+- **A short, readable file** — 15–20 lines instead of 50+
+- **A declarative description** — you describe *what* you want, not *how* to invoke Podman
+- **Version-control friendliness** — `.container` files are easy to diff, review, and audit
+- **Automatic regeneration** — Quadlet re-generates the underlying unit file every time you run `daemon-reload`. You never touch the generated output.
+- **Official support** — Quadlet is the documented, supported path on RHEL 9 and Rocky Linux 9
+
+> **Rule of thumb:** If a tutorial tells you to run `podman generate systemd`, it is outdated. Use Quadlet instead.
+
+Rocky Linux 9 ships with Podman 4.x where Quadlet is available and `podman generate systemd` still exists for backward compatibility, but you should treat it as off-limits for all new work.
+
+---
+
+## Step 8 — Inspect All Running Container Services
+
+When you have more than one Quadlet service — perhaps a database, a web application, and a background worker — you need a way to see all of them at once without running `systemctl --user status` on each one individually.
+
+### List all user units matching a pattern
+
+```bash
+systemctl --user list-units 'pod*'
+```
+
+> **What does `pod*` match?**
+> Quadlet-generated services are named after your `.container` file (e.g. `web.service`), but they all rely on Podman under the hood. The `pod*` pattern also matches `podman.service` and `podman-auto-update.timer` if those are active. For your own services, use a pattern that matches your naming convention — for example, if all your services start with `app-`, use `app-*`.
+
+A more targeted approach — list only `.service` units that are currently active or failed:
+
+```bash
+systemctl --user list-units --type=service --state=active,failed
+```
+
+Expected output when `web.service` is running:
+
+```text
+  UNIT        LOAD   ACTIVE SUB     DESCRIPTION
+  web.service loaded active running My web application (Nginx container)
+
+LOAD   = Reflects whether the unit definition was properly loaded.
+ACTIVE = The high-level unit activation state.
+SUB    = The low-level unit activation sub-state.
+
+1 loaded units listed.
+```
+
+### List all unit files (including inactive services)
+
+To see every unit Quadlet has generated — whether it is running or not:
+
+```bash
+systemctl --user list-unit-files --type=service
+```
+
+This shows every `.service` file systemd knows about, along with its enabled/disabled state:
+
+```text
+UNIT FILE    STATE    PRESET
+web.service  enabled  disabled
+```
+
+`enabled` means the service has a `WantedBy=default.target` symlink and will start on boot. `disabled` means it exists but will not start automatically.
+
+### Check a specific service quickly
+
+```bash
+systemctl --user is-active web
+```
+
+Returns `active` or `inactive` — useful in scripts where you need a one-word answer without the full status block.
+
+```bash
+systemctl --user is-failed web
+```
+
+Returns `failed` if the service hit a restart limit, `active` otherwise.
+
+---
+
+## Step 9 — Keep Container Images Up to Date with `podman auto-update`
+
+Quadlet containers pull their image when the service first starts. After that, the image is cached locally and the container keeps using it — even if a newer version is pushed to the registry. To keep images current, Podman provides `podman auto-update`.
+
+### Add `AutoUpdate=registry` to the unit file
+
+Open your `.container` file:
+
+```bash
+vi ~/.config/containers/systemd/web.container
+```
+
+Add one line to the `[Container]` section:
+
+```ini
+[Container]
+Image=docker.io/library/nginx:latest
+PublishPort=8080:80
+Volume=%h/www:/usr/share/nginx/html:Z
+Environment=NGINX_ENTRYPOINT_QUIET_LOGS=1
+AutoUpdate=registry
+```
+
+Save and reload:
+
+```bash
+systemctl --user daemon-reload
+```
+
+> **What does `AutoUpdate=registry` do?**
+> It tells `podman auto-update` to check the remote registry for a newer digest of the image. If a newer version is found, Podman pulls it, restarts the service with the new image, and records the update in the journal. If the new image causes the service to fail, Podman automatically rolls back to the previous image — a safety net for production deployments.
+
+### Run a dry-run check
+
+Before any images are updated, preview what would change:
+
+```bash
+podman auto-update --dry-run
+```
+
+Expected output when your image is already up to date:
+
+```text
+            UNIT             CONTAINER              IMAGE                              POLICY    UPDATED
+web.service  systemd-web (abc123de)  docker.io/library/nginx:latest  registry  false
+```
+
+The `UPDATED` column shows `false` — the local image matches the registry. If an update is available, it shows `pending`.
+
+Expected output when an update is available:
+
+```text
+            UNIT             CONTAINER              IMAGE                              POLICY    UPDATED
+web.service  systemd-web (abc123de)  docker.io/library/nginx:latest  registry  pending
+```
+
+### Run an actual update
+
+```bash
+podman auto-update
+```
+
+Podman checks every container with `AutoUpdate=registry`, pulls any updated images, and restarts affected services. The output confirms which services were updated.
+
+### Automate updates with the systemd timer
+
+Rocky Linux ships a systemd timer that runs `podman auto-update` automatically:
+
+```bash
+systemctl --user enable --now podman-auto-update.timer
+```
+
+Check when it last ran and when it will run next:
+
+```bash
+systemctl --user list-timers podman-auto-update.timer
+```
+
+Expected output:
+
+```text
+NEXT                        LEFT          LAST                        PASSED  UNIT                       ACTIVATES
+Fri 2026-03-20 00:00:00 UTC 13h left      Thu 2026-03-19 00:00:00 UTC 10h ago podman-auto-update.timer   podman-auto-update.service
+```
+
+By default the timer fires once daily (at midnight). This means your containers will pick up security patches and new releases automatically — without any manual intervention — and roll back safely if the new image breaks the service.
+
+> **Security note:** Automatic image updates are a trade-off. They protect you from known vulnerabilities in the image but introduce the risk of a registry change breaking your service. For experiments and learning, `AutoUpdate=registry` is fine. For a critical production service, consider pinning to a specific image digest and updating on a controlled schedule.
+
+---
+
 ## Troubleshooting
 
 ### `Unit web.service could not be found`
@@ -544,6 +755,69 @@ journalctl --user -u web -n 50 --no-pager
 ```
 
 Read the log carefully — the application's own error message is usually the clue. Fix the underlying problem (wrong image name, missing volume, bad environment variable) in the `.container` file, reload the daemon, and start again.
+
+### SELinux denies the container image itself (not the volume mount)
+
+In Lesson 5 and earlier in this lesson, you applied the `:Z` suffix to volume mounts so that SELinux labels the *host directory* correctly for container access. But sometimes SELinux denies access to the **container image layers** themselves — a different problem with a different fix.
+
+This happens when the container runtime's own file contexts are wrong, typically after a system update that changes SELinux policy without relabelling existing files.
+
+**How to identify this denial:**
+
+Run `ausearch` to find recent AVC denials:
+
+```bash
+ausearch -m AVC -ts recent
+```
+
+A denial caused by the container image (not a volume) looks like this:
+
+```text
+type=AVC msg=audit(1710844800.123:456): avc:  denied  { read } for
+  pid=5678 comm="podman" name="overlay" dev="sda1" ino=98765
+  scontext=system_u:system_r:container_runtime_t:s0
+  tcontext=system_u:object_r:container_var_lib_t:s0
+  tclass=dir permissive=0
+```
+
+The key is the `tcontext` — it involves `container_var_lib_t` or `container_file_t`, which are labels for Podman's storage directories, not your home directory or a mounted volume.
+
+**Step 1 — Pass the denial through `audit2why` for a plain-English explanation:**
+
+```bash
+ausearch -m AVC -ts recent | audit2why
+```
+
+`audit2why` reads the AVC denial and prints a human-readable explanation and suggested fix. If it suggests a boolean, set it. If it says the label is wrong, continue to Step 2.
+
+**Step 2 — Restore the correct SELinux contexts on Podman's storage:**
+
+```bash
+sudo restorecon -Rv /var/lib/containers
+```
+
+`restorecon` reapplies the correct SELinux file contexts based on the system's file context policy. The `-R` flag means recursive (all subdirectories) and `-v` means verbose (print every change). This is the standard fix when a package update changes SELinux policy without relabelling existing data.
+
+**Step 3 — Also relabel the user's Podman storage:**
+
+```bash
+restorecon -Rv ~/.local/share/containers
+```
+
+Note: no `sudo` here — this is your home directory.
+
+**Step 4 — Restart the service and confirm:**
+
+```bash
+systemctl --user restart web
+systemctl --user status web
+```
+
+If the service starts cleanly, the context was the problem and `restorecon` fixed it. If denials persist, run `ausearch -m AVC -ts recent | audit2why` again — the new output may point to a different cause.
+
+> **Remember:** SELinux denials on volume mounts (`:Z` is missing or wrong) and SELinux denials on container image storage are two different problems. `:Z` on the volume fixes the first. `restorecon` on Podman's storage directories fixes the second. `audit2why` tells you which one you are dealing with.
+
+---
 
 ### Linger is set but container does not start on reboot
 

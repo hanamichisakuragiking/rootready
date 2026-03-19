@@ -106,12 +106,12 @@
 - [x] Update Lesson 5 "Next up" link
 - [x] Verify `hugo build` succeeds
 - [x] Commit
-- [ ] Section: Step — `podman generate systemd` (legacy) vs Quadlet — why it was replaced
-- [ ] Section: Step — Inspect all container services with `systemctl --user list-units`
-- [ ] Section: Step — Configure `podman auto-update` with `AutoUpdate=registry` in the unit file
-- [ ] Troubleshooting: SELinux denial on the container image itself (not the volume mount)
-- [ ] Verify `hugo build` succeeds after additions
-- [ ] Commit additions
+- [x] Section: Step — `podman generate systemd` (legacy) vs Quadlet — why it was replaced
+- [x] Section: Step — Inspect all container services with `systemctl --user list-units`
+- [x] Section: Step — Configure `podman auto-update` with `AutoUpdate=registry` in the unit file
+- [x] Troubleshooting: SELinux denial on the container image itself (not the volume mount)
+- [x] Verify `hugo build` succeeds after additions
+- [x] Commit additions
 
 ---
 
