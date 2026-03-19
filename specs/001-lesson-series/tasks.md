@@ -91,21 +91,21 @@
 
 ---
 
-## Phase 6 — Lesson 6: Quadlet and systemd Integration
+## Phase 6 — Lesson 6: Quadlet and systemd Integration ✅
 
-- [ ] Create `content/lessons/06-quadlet/index.md`
-- [ ] Write frontmatter (weight: 6, tags: quadlet, systemd, podman)
-- [ ] Section: What You Will Learn
-- [ ] Section: What You Need Before Starting (reference Lesson 5)
-- [ ] Section: Step — Why containers need a service manager
-- [ ] Section: Step — Write a `.container` Quadlet file
-- [ ] Section: Step — Enable and start with `systemctl --user`
-- [ ] Section: Step — Verify auto-restart behavior
-- [ ] Section: Troubleshooting (unit not found, ExecStart failure)
-- [ ] Section: Summary
-- [ ] Update Lesson 5 "Next up" link
-- [ ] Verify `hugo build` succeeds
-- [ ] Commit
+- [x] Create `content/lessons/06-quadlet/index.md`
+- [x] Write frontmatter (weight: 6, tags: quadlet, systemd, podman)
+- [x] Section: What You Will Learn
+- [x] Section: What You Need Before Starting (reference Lesson 5)
+- [x] Section: Step — Why containers need a service manager
+- [x] Section: Step — Write a `.container` Quadlet file
+- [x] Section: Step — Enable and start with `systemctl --user`
+- [x] Section: Step — Verify auto-restart behavior
+- [x] Section: Troubleshooting (unit not found, ExecStart failure)
+- [x] Section: Summary
+- [x] Update Lesson 5 "Next up" link
+- [x] Verify `hugo build` succeeds
+- [x] Commit
 
 ---
 

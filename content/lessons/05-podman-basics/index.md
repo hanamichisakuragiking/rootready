@@ -421,4 +421,4 @@ Your server can now run containerised applications as a regular user, with the f
 
 ---
 
-**Next up:** Lesson 6 — Quadlet and systemd Integration (coming soon)
+**Next up:** [Lesson 6 — Quadlet and systemd Integration]({{< relref "/lessons/06-quadlet" >}})
